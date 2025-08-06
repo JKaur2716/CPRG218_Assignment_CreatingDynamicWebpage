@@ -139,4 +139,126 @@ section {
     border-radius: 10px;
 }
 
-/* Implement your styling here */
+/* My Styling */
+
+body {
+    background-color: #121212; /* dark site background */
+}
+
+.card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 0;
+    text-align: center;
+    color: black;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+/* Poster container */
+.cardPosterDiv {
+    width: 100%;
+    height: 330px; 
+    overflow: hidden;
+}
+
+.moviePoster {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+}
+
+
+.cardTitle {
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 10px;
+    background: #f5f5f5;
+    color: #222;
+    border-top: 1px solid #ddd;
+}
+
+.noresult {
+    color: #d93025;
+    font-size: 1.3rem;
+    padding: 15px;
+    margin: 20px auto;
+    border: 1px solid #d93025;
+    border-radius: 8px;
+    max-width: 300px;
+    text-align: center;
+    background-color: #ffe6e6;
+}
+
+/* Responsiveness */
+@media (max-width: 600px) {
+    #movieCards {
+        height: auto;
+    }
+
+    .card {
+        width: 90%;
+        margin: 10px auto;
+    }
+
+    .cardPosterDiv {
+        height: auto; /* allow full image height on small screens */
+    }
+}
+
+/* Scrollbar styling */
+#movieCards::-webkit-scrollbar {
+    width: 8px;
+}
+
+#movieCards::-webkit-scrollbar-thumb {
+    background-color: rgba(255,255,255,0.3);
+    border-radius: 4px;
+}
+
+/* About Page Styling */
+body {
+    background-color: #121212; 
+}
+
+#aboutDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+    padding: 40px;
+}
+
+#aboutWebsite {
+    font-size: 1.4rem;
+    color: #f5f5f5;
+    background: rgba(255,255,255,0.05);
+    padding: 20px 30px;
+    border-radius: 10px;
+    max-width: 600px;
+    line-height: 1.6;
+}
+
+#aboutWebsite .highlight {
+    color: #ffcc00; 
+    font-weight: bold;
+}
+
+/* Hover for the home button */
+.link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+    transition: 0.2s ease;
+}

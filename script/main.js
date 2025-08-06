@@ -11,7 +11,7 @@
 
 const myApiKey = ""; // <<-- ADD YOUR API KEY HERE. DELETE THIS KEY before uploading your code on Github or Brightspace, 
 
-const BASE_URL = "http://www.omdbapi.com";
+const BASE_URL = "https://www.omdbapi.com";
 
 
 document.addEventListener('DOMContentLoaded', addEventHandlers);    // calling addEventHandlers function once the html document is loaded.
@@ -50,8 +50,7 @@ function addEventHandlers() {
 function clearPreviousResult() {
     const nodes = document.getElementById("movieCards").childNodes;
     console.log(`clearPreviousResult: ${nodes.length}`);
-    for(var i = nodes.length; i>=0; i--) {
-        console.log("deleting node")
+    for(let i = nodes.length; i >= 0; i--) {
         nodes[i]?.remove();
     }
 }
@@ -67,15 +66,11 @@ function clearPreviousResult() {
  */
 function createHtmlElement(elementName, classNames = [], contentText = '') {
     console.log(`CreateHtmlElement: ${elementName}`);
-    // step 1: Create the html element
-    const htmlElment = document.createElement(elementName);
-    // step 2: add classes to the element
-    classNames.forEach(className => htmlElment.classList.add(className));
-    // step 3: add the content
-    htmlElment.innerHTML = contentText;
-    return htmlElment;
+    const htmlElement = document.createElement(elementName);
+    classNames.forEach(className => htmlElement.classList.add(className));
+    htmlElement.innerHTML = contentText;
+    return htmlElement;
 }
-
 
 /**
  * Perform a fetch operation to OMDB API to get list of movies based on movieTitle user provided
@@ -83,17 +78,13 @@ function createHtmlElement(elementName, classNames = [], contentText = '') {
  * @param {string} movieTitle - String user entered in the search bar.
  */
 async function getMovies(movieTitle) {
-
     const API_URL = `${BASE_URL}/?apikey=${myApiKey}&s=${movieTitle}`;
 
     try {
         const response = await fetch(API_URL);
 
         if(response.ok) {
-            
-            // Success response is received. Extracting movieList from response.
             const data = await response.json();
-
             const movieList = data.Search;
 
             if(movieList == null || movieList.length == 0) {
@@ -103,8 +94,6 @@ async function getMovies(movieTitle) {
 
             // check the Poster URL, if poster url is not correct, do not create movie card.
             const moviePromises = movieList.map(movie => checkPosterURL(movie));
-
-            // wait for all the promise to be settled.
             const results = await Promise.allSettled(moviePromises);
 
             const filteredMovies = [];
@@ -114,23 +103,20 @@ async function getMovies(movieTitle) {
                     movieObj.Title = movieObj.Title.length > 40 ? `${movieObj.Title.substring(0,40)}...` : movieObj.Title;
                     filteredMovies.push(movieObj);
                 }
-            })
+            });
 
             console.log("Final movie list: ");
-            console.log(filteredMovies)
+            console.log(filteredMovies);
 
-            /**
-             * TASK : 1
-             * if filteredMovies.length == 0, call createEmptyView() method.
-             * Else write a for loop which will iterator over filteredMovies array 
-             * and call createMovieCard() for each movie object in this array.
-             */
-
+            if (filteredMovies.length === 0) {
+                createEmptyView();
+            } else {
+                filteredMovies.forEach(movie => createMovieCard(movie));
+            }
         }
     } catch(exception) {
-        console.error("Exception occurred in getMovies function.")
+        console.error("Exception occurred in getMovies function.");
         console.error(exception);
-
     }
 }
 
@@ -142,34 +128,33 @@ async function getMovies(movieTitle) {
  */
 async function checkPosterURL(movie) {
     try {
-        const response = await fetch(movie.Poster)
+        const response = await fetch(movie.Poster);
         if(response.ok) {
-            // Poster url is working
             return movie;
         } else {
-            // Poster url is not correct
             return null;
         }
     } catch(error) {
         console.error("Error while checking poster url");
         console.error(error);
+        return null;
     }
 }
 
 /**
  * If the search operation does not create any movie card, call this method to create empty view. 
- * Create a "p" element and append it to "movieCards" section. The structure of p element is given below.
+ * Create a "p" element and append it to "movieCards" section.
  * 
  *      <p class="noresult">No movie found!!! Please search for another title.</p>
  */
 function createEmptyView() {
     console.log("createEmptyView");
 
-    /**
-     * TASK : 2
-     * Create empty view and append it to "movieCards" section.
-     */
-
+    const container = document.getElementById("movieCards");
+    const message = document.createElement('p');
+    message.classList.add('noresult');
+    message.textContent = "No movie found!!! Please search for another title.";
+    container.appendChild(message);
 }
 
 /**
@@ -186,10 +171,33 @@ function createEmptyView() {
 function createMovieCard(movie) {
     console.log("createMovieCard");
     console.log(movie);
-    
-    /**
-     * TASK : 3
-     * Create Movie Card and append it "movieCards" section.
-     */
 
+    const container = document.getElementById("movieCards");
+
+    // Create article with class 'card'
+    const article = document.createElement('article');
+    article.classList.add('card');
+
+    // Create paragraph for title
+    const title = document.createElement('p');
+    title.classList.add('cardTitle');
+    title.textContent = movie.Title;
+
+    // Create div for poster with class 'cardPosterDiv'
+    const posterDiv = document.createElement('div');
+    posterDiv.classList.add('cardPosterDiv');
+
+    // Create img element for poster
+    const posterImg = document.createElement('img');
+    posterImg.classList.add('moviePoster');
+    posterImg.src = movie.Poster;
+    posterImg.alt = "Movie poster";
+
+    // Append img to posterDiv, then append title and posterDiv to article
+    posterDiv.appendChild(posterImg);
+    article.appendChild(title);
+    article.appendChild(posterDiv);
+
+    // Append article to container
+    container.appendChild(article);
 }
